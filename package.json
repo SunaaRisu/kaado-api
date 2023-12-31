@@ -1,6 +1,6 @@
 {
   "name": "kards-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Backend for the RISU Kards app",
   "main": "server.js",
   "scripts": {

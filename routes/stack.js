@@ -5,7 +5,7 @@ const StackController = require('../controller/stack');
 
 router.get("/get_one", StackController.getOne);
 
-router.get("/get_all", StackController.getAll);
+router.get("/get_stack_list", StackController.getStackList);
 
 router.post("/create", StackController.create);
 
