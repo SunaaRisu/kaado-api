@@ -33,10 +33,28 @@ exports.getOne = (req, res, next) => {
 exports.getStackList = (req, res, next) => {
     Stack.find()
         .then(result => {
+
+            var response = [];
+
+            result.forEach(stack => {
+                response.push({
+                    _id: stack._id,
+                    title: stack.title,
+                    card_count: stack.card_count
+                });
+            });
+
             return res.status(200).json({
-                stacks: result
+                stacks: response
             });
         })
+        .catch(err => {
+            return res.status(500).json({
+                error: 'Internal server error'
+            });
+        });
+
+    
 }
 
 exports.create = (req, res, next) => {
