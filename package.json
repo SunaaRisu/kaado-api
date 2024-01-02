@@ -1,7 +1,7 @@
 {
-  "name": "kards-api",
-  "version": "0.0.2",
-  "description": "Backend for the RISU Kards app",
+  "name": "kaado-api",
+  "version": "0.0.3",
+  "description": "Backend for the RISU Kaado app",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

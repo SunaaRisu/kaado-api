@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Stack = require('../models/stack');
+const Deck = require('../models/deck');
 
 exports.getOne = (req, res, next) => {
     if(typeof(req.body._id) !== 'string') {
@@ -8,18 +8,18 @@ exports.getOne = (req, res, next) => {
         });
     };
 
-    Stack.findOne({_id: req.body._id})
+    Deck.findOne({_id: req.body._id})
         .exec()
-        .then(stack => {
-            if (!stack) {
+        .then(deck => {
+            if (!deck) {
                 return res.status(404).json({
-                    error: 'stack not found'
+                    error: 'deck not found'
                 });
             };
             
             return res.status(200).json({
-                stack: stack,
-                stackId: req.body._id
+                deck: deck,
+                deckId: req.body._id
             });
         })
         .catch(err => {
@@ -30,22 +30,22 @@ exports.getOne = (req, res, next) => {
         });
 }
 
-exports.getStackList = (req, res, next) => {
-    Stack.find()
+exports.getDeckList = (req, res, next) => {
+    Deck.find()
         .then(result => {
 
             var response = [];
 
-            result.forEach(stack => {
+            result.forEach(deck => {
                 response.push({
-                    _id: stack._id,
-                    title: stack.title,
-                    card_count: stack.card_count
+                    _id: deck._id,
+                    title: deck.title,
+                    card_count: deck.card_count
                 });
             });
 
             return res.status(200).json({
-                stacks: response
+                decks: response
             });
         })
         .catch(err => {
@@ -84,7 +84,7 @@ exports.create = (req, res, next) => {
 
         const id = new mongoose.Types.ObjectId();
 
-        const stack = new Stack({
+        const deck = new Deck({
             _id: id,
             title: req.body.title, 
             card_count: cards.length,
@@ -95,7 +95,7 @@ exports.create = (req, res, next) => {
             }
         });
 
-        stack.save()
+        deck.save()
         .then(result => {
             if (!result) {
                 res.status(500).json({
@@ -104,7 +104,7 @@ exports.create = (req, res, next) => {
             }
 
             res.status(201).json({
-                message: 'Stack created',
+                message: 'Deck created',
                 _id: id
             });
         })

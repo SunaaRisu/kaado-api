@@ -7,7 +7,7 @@ const cors = require('cors');
 
 // Routes
 
-const stackRoutes = require('./routes/stack');
+const deckRoutes = require('./routes/deck');
 const cardRoutes = require('./routes/card');
 
 // mongoose connect 
@@ -30,7 +30,7 @@ app.use(cookieParser());
 
 app.use(
     cors({ 
-        origin: ['http://localhost:5173', 'https://kards.sunaarisu.de'], 
+        origin: ['http://localhost:5173', 'https://kaado.sunaarisu.de'], 
         methods: ['GET', 'POST'], 
         credentials: true
     })
@@ -38,10 +38,10 @@ app.use(
 
 // Use Routes
 
-app.use('/stack', stackRoutes);
+app.use('/deck', deckRoutes);
 app.use('/card', cardRoutes);
 
-app.get('/', (req, res) => res.json('Kards API is running!'));
+app.get('/', (req, res) => res.json('Kaado API is running!'));
 
 
 // Error

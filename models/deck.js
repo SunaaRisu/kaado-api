@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const stack = mongoose.Schema({
+const deck = mongoose.Schema({
     title: {type: String},
     card_count: {type: Number},
     cards: {type: Array},
@@ -10,4 +10,4 @@ const stack = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model('Stack', stack);
+module.exports = mongoose.model('Deck', deck);
