@@ -12,9 +12,7 @@ const cardRoutes = require('./routes/card');
 
 // mongoose connect 
 
-mongoose.connect(    
-    process.env.DB_URL
-);
+mongoose.connect(process.env.DB_URL);
 mongoose.Promise = global.Promise;
 
 
