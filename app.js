@@ -9,10 +9,11 @@ const cors = require('cors');
 
 const deckRoutes = require('./routes/deck');
 const cardRoutes = require('./routes/card');
+const userRoutes = require('./routes/user');
 
 // mongoose connect 
 
-mongoose.connect(process.env.DB_URL);
+mongoose.connect(process.env.DB_URI);
 mongoose.Promise = global.Promise;
 
 
@@ -38,6 +39,7 @@ app.use(
 
 app.use('/deck', deckRoutes);
 app.use('/card', cardRoutes);
+app.use('/user', userRoutes);
 
 app.get('/', (req, res) => res.json('Kaado API is running!'));
 
