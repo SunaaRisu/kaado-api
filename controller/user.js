@@ -363,3 +363,38 @@ exports.send2FAmail = (req, res, next) => {
             }                            
         });
 };
+
+exports.confirmEmail = (req, res, next) => {
+    var twofaTokenContent = '';
+
+    try {
+        twofaTokenContent = jwt.verify(req.body.twofaToken, process.env.TWOFA_KEY)._id;
+    } catch (error) {
+        console.log(error);
+        return res.status(401).json({
+            message: '2FA Token verification failed'
+        });
+    };
+
+    if (req.userData._id === twofaTokenContent) {
+        User.findOneAndUpdate({ _id: req.userData._id }, { "$set": {"flags.emailConfirmed": true}})
+        .exec()
+        .then(result => {
+            if (!result) {
+                return res.status(404).json({
+                    error: 'updating user failed'
+                });
+            }else{
+                return res.status(200).json({
+                    message: 'User updated'
+                });
+            };
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Internal server error'
+            });
+        });
+    };    
+};

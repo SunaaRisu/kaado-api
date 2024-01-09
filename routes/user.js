@@ -12,6 +12,8 @@ router.get("/refresh_token", UserController.refresh_token);
 
 router.post("/send_2FA_mail", authAndGetData, UserController.send2FAmail);
 
+router.post("/confirm_email", authAndGetData, UserController.confirmEmail);
+
 // router.patch("/update_user", UserController.updateUser);
 
 // router.delete("/delete", UserController.delete);
