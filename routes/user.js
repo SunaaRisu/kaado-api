@@ -20,4 +20,6 @@ router.post("/confirm_email", authAndGetData, UserController.confirmEmail);
 
 // router.post("/get_user", UserController.getUser);
 
+// router.post("/request_data", authAndGetData, UserController.requestData);
+
 module.exports = router;
