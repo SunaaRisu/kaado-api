@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 const User = require('../models/user');
 
 
@@ -41,7 +42,8 @@ exports.create = (req, res, next) => {
                 .then(result => {
                     const jwt_token = jwt.sign({
                         _id: user._id,
-                        username: user.username
+                        username: user.username,
+                        email: user.email
                     },
                     process.env.JWT_KEY,
                     {
@@ -119,7 +121,8 @@ exports.login = (req, res, next) => {
                 } else {
                     const jwt_token = jwt.sign({
                         _id: user._id,
-                        username: user.username
+                        username: user.username,
+                        email: user.email
                     },
                     process.env.JWT_KEY,
                     {
@@ -182,7 +185,8 @@ exports.login = (req, res, next) => {
                 } else {
                     const jwt_token = jwt.sign({
                         _id: user._id,
-                        username: user.username
+                        username: user.username,
+                        email: user.email
                     },
                     process.env.JWT_KEY,
                     {
@@ -254,7 +258,8 @@ exports.refresh_token = (req, res, next) => {
 
             const jwt_token = jwt.sign({
                 _id: user._id,
-                username: user.username
+                username: user.username,
+                email: user.email
             },
             process.env.JWT_KEY,
             {
@@ -293,15 +298,68 @@ exports.refresh_token = (req, res, next) => {
 };
 
 exports.send2FAmail = (req, res, next) => {
+    if (typeof(req.body.purpose) !== 'string') {
+        return res.status(400).json({
+            error: 'wrong datatype'
+        });
+    };
 
     const twofaToken = jwt.sign(
         {
-        _id: user._id
+        _id: req.userData._id
         },
         process.env.TWOFA_KEY,
         {
-            expiresIn: "1m"
-        });
+            expiresIn: "5m"
+        }
+    );
 
+    var subject = '';
+    var text = '';
+
+    switch (req.body.purpose) {
+        case 'confirm_email':
+            subject = 'Confirm your Email address';
+            text = 'Go to https://kaado.sunaarisu.de/confirm_email?c=' + twofaToken;
+            break;
     
+        default:
+            return res.status(500).json({
+                error: "Internal server issue"
+            });
+            break;
+    }
+
+    const transporter = nodemailer.createTransport({
+        port: 465,
+        host: "mail.your-server.de",
+           auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PWD,
+             },
+        secure: true,
+    });
+    
+    const mailData = {
+        from: 'no-reply@sunaarisu.de',
+        to: req.userData.email,
+        subject: subject,
+        text: text,
+        // html: {
+        //     path: path.resolve(__dirname, "../templates/requestData.html"),
+        // }
+        };
+    
+        transporter.sendMail(mailData, function (err, info) {
+            if(err){
+                console.log(err);
+                return res.status(500).json({
+                    error: "Email can't be send"
+                });
+            }else{
+                return res.status(200).json({
+                    message: 'Email send'
+                });
+            }                            
+        });
 };
