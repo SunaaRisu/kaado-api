@@ -9,6 +9,8 @@ router.post("/login", UserController.login);
 
 router.get("/refresh_token", UserController.refresh_token);
 
+router.get("/send_2FA_mail", UserController.send2FAmail);
+
 // router.patch("/update_user", UserController.updateUser);
 
 // router.delete("/delete", UserController.delete);

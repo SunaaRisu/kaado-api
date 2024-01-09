@@ -291,3 +291,17 @@ exports.refresh_token = (req, res, next) => {
             });
         });
 };
+
+exports.send2FAmail = (req, res, next) => {
+
+    const twofaToken = jwt.sign(
+        {
+        _id: user._id
+        },
+        process.env.TWOFA_KEY,
+        {
+            expiresIn: "1m"
+        });
+
+    
+};
