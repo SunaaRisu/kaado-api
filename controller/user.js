@@ -222,4 +222,72 @@ exports.login = (req, res, next) => {
             });
         });
     }
-}
+};
+
+exports.refresh_token = (req, res, next) => {
+
+    var jid_token = '';
+
+    if (req.cookies.jid === 'undefined'){
+        return res.status(401).json({
+            error: 'no refresh token'
+        });
+    }
+
+    try {
+        jid_token = jwt.verify(req.cookies.jid, process.env.JID_KEY);
+    } catch (error) {
+        console.log(error)
+        return res.status(401).json({
+            error: 'refresh token invalid'
+        });
+    };
+
+    User.findOne({ _id: jid_token._id})
+        .exec()
+        .then(user => {
+            if (!user) {
+                return res.status(401).json({
+                    error: 'refresh token invalid'
+                });
+            };
+
+            const jwt_token = jwt.sign({
+                _id: user._id,
+                username: user.username
+            },
+            process.env.JWT_KEY,
+            {
+                expiresIn: "15m"
+            });
+
+            const jid_token = jwt.sign({
+                _id: user._id
+            },
+            process.env.JID_KEY,
+            {
+                expiresIn: "15d"
+            });
+
+            res.cookie(
+                "jid",
+                jid_token,
+                {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: 'none',
+                    expires: new Date(Date.now() + 1296000000) //15 Days
+                }
+            );
+
+            return res.status(200).json({
+                token: jwt_token
+            });
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Auth failed due to server issue'
+            });
+        });
+};

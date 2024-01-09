@@ -7,7 +7,7 @@ router.post("/signup", UserController.create);
 
 router.post("/login", UserController.login);
 
-// router.get("/refresh_token", UserController.login);
+router.get("/refresh_token", UserController.refresh_token);
 
 // router.patch("/update_user", UserController.updateUser);
 
