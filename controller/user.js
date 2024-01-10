@@ -298,7 +298,7 @@ exports.refresh_token = (req, res, next) => {
 };
 
 exports.send2FAmail = (req, res, next) => {
-    if (typeof(req.body.purpose) !== 'string') {
+if (typeof(req.body.purpose) !== 'string') {
         return res.status(400).json({
             error: 'wrong datatype'
         });
@@ -314,7 +314,7 @@ exports.send2FAmail = (req, res, next) => {
         }
     );
 
-    var subject = '';
+var subject = '';
     var text = '';
 
     switch (req.body.purpose) {
@@ -381,7 +381,7 @@ exports.confirmEmail = (req, res, next) => {
         .exec()
         .then(result => {
             if (!result) {
-                return res.status(404).json({
+                return res.status(500).json({
                     error: 'updating user failed'
                 });
             }else{
@@ -397,4 +397,37 @@ exports.confirmEmail = (req, res, next) => {
             });
         });
     };    
+};
+
+exports.updateUser = (req, res, next) => {
+    var updateQuery = {};
+    req.body.updates.forEach(update => {
+        if (typeof(update.field) !== 'string' || typeof(update.value) !== 'string' && typeof(update.value) !== 'boolean'){
+            return res.status(400).json({
+                error: 'wrong datatype'
+            });
+        }else{
+            updateQuery[update.field] = update.value;
+        };
+    });
+
+    User.findOneAndUpdate({ _id: req.userData._id}, updateQuery)
+        .exec()
+        .then(result => {
+            if (!result) {
+                return res.status(500).json({
+                    error: 'updating user failed'
+                });
+            }else{
+                return res.status(200).json({
+                    message: 'User updated'
+                });
+            };
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Internal server error'
+            });
+        });
 };

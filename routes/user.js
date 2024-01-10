@@ -14,7 +14,7 @@ router.post("/send_2FA_mail", authAndGetData, UserController.send2FAmail);
 
 router.post("/confirm_email", authAndGetData, UserController.confirmEmail);
 
-// router.patch("/update_user", UserController.updateUser);
+router.patch("/update_user", authAndGetData, UserController.updateUser);
 
 // router.delete("/delete", UserController.delete);
 
