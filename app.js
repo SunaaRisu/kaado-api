@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use(
     cors({ 
         origin: ['http://localhost:5173', 'https://kaado.sunaarisu.de'], 
-        methods: ['GET', 'POST'], 
+        methods: ['GET', 'POST', 'PATCH'], 
         credentials: true
     })
 );

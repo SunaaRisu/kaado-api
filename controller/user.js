@@ -43,7 +43,8 @@ exports.create = (req, res, next) => {
                     const jwt_token = jwt.sign({
                         _id: user._id,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        version: user.flags.version
                     },
                     process.env.JWT_KEY,
                     {
@@ -122,7 +123,8 @@ exports.login = (req, res, next) => {
                     const jwt_token = jwt.sign({
                         _id: user._id,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        version: user.flags.version
                     },
                     process.env.JWT_KEY,
                     {
@@ -186,7 +188,8 @@ exports.login = (req, res, next) => {
                     const jwt_token = jwt.sign({
                         _id: user._id,
                         username: user.username,
-                        email: user.email
+                        email: user.email,
+                        version: user.flags.version
                     },
                     process.env.JWT_KEY,
                     {
@@ -259,7 +262,8 @@ exports.refresh_token = (req, res, next) => {
             const jwt_token = jwt.sign({
                 _id: user._id,
                 username: user.username,
-                email: user.email
+                email: user.email,
+                version: user.flags.version
             },
             process.env.JWT_KEY,
             {
