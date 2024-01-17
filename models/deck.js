@@ -1,16 +1,7 @@
 const mongoose = require('mongoose');
 
-// const deck = mongoose.Schema({
-//     title: {type: String},
-//     card_count: {type: Number},
-//     cards: {type: Array},
-//     chartDefinition: {
-//         chart_columns: {type: Number},
-//         chart_columns_name: {type: Array}
-//     }
-// })
-
 const deck = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
     deck_info: {
         title: {type: String},
         author: {type: String},
