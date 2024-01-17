@@ -8,6 +8,8 @@ router.post("/signup", UserController.create);
 
 router.post("/login", UserController.login);
 
+router.get("/signout", UserController.signOut);
+
 router.get("/refresh_token", UserController.refresh_token);
 
 router.post("/send_2FA_mail", authAndGetData, UserController.send2FAmail);

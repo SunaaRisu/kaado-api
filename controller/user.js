@@ -231,6 +231,23 @@ exports.login = (req, res, next) => {
     }
 };
 
+exports.signOut = (req, res, next) => {
+    res.cookie(
+        "jid",
+        null,
+        {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'none',
+            expires: new Date(Date.now() - 1) // delete
+        }
+    );
+
+    return res.status(200).json({
+        message: 'jid delete'
+    });
+};
+
 exports.refresh_token = (req, res, next) => {
 
     var jid_token = '';
