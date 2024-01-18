@@ -37,7 +37,6 @@ app.use(
 // Use Routes
 
 app.use('/deck', deckRoutes);
-app.use('/card', cardRoutes);
 app.use('/user', userRoutes);
 
 app.get('/', (req, res) => res.json('Kaado API is running!'));
