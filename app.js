@@ -8,7 +8,6 @@ const cors = require('cors');
 // Routes
 
 const deckRoutes = require('./routes/deck');
-const cardRoutes = require('./routes/card');
 const userRoutes = require('./routes/user');
 
 // mongoose connect 
