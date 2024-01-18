@@ -39,7 +39,8 @@ exports.getDeckList = (req, res, next) => {
             result.forEach(deck => {
                 response.push({
                     _id: deck._id,
-                    deckInfo: deck.deck_info
+                    deckInfo: deck.deck_info,
+                    deckSettings: deck.deck_settings
                 });
             });
 
@@ -52,27 +53,6 @@ exports.getDeckList = (req, res, next) => {
                 error: 'Internal server error'
             });
         });    
-}
-
-exports.getDeckSettings = (req, res, next) => {
-    Deck.findOne({ _id: req.body._id })
-        .then(deck => {
-            if (!deck) {
-                return res.status(404).json({
-                    error: 'deck not found'
-                });
-            };
-
-            return res.status(200).json({
-                deckInfo: deck.deck_info,
-                deckSettings: deck.deck_settings
-            });
-        })
-        .catch(err => {
-            return res.status(500).json({
-                error: 'Internal server error'
-            });
-        });
 }
 
 exports.create = (req, res, next) => {
