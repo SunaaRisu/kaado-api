@@ -114,3 +114,39 @@ exports.create = (req, res, next) => {
         });
     }    
 }
+
+exports.update = (req, res, next) => {
+    var updateQuery = {};
+    req.body.updates.forEach(update => {
+        if (typeof(update.field) !== 'string' || typeof(update.value) !== 'string' && typeof(update.value) !== 'boolean' && !Array.isArray(update.value) && typeof(update.value) !== 'number'){
+            return res.status(400).json({
+                error: 'wrong datatype',
+                reason: [update.field, update.value]
+            });
+        }else{
+            updateQuery[update.field] = update.value;
+        };
+    });
+
+    console.log(updateQuery);
+
+    Deck.findOneAndUpdate({ _id: req.body._id}, updateQuery)
+        .exec()
+        .then(result => {
+            if (!result) {
+                return res.status(500).json({
+                    error: 'updating user failed'
+                });
+            }else{
+                return res.status(200).json({
+                    message: 'User updated'
+                });
+            };
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Internal server error'
+            });
+        });
+};

@@ -13,8 +13,8 @@ const deck = mongoose.Schema({
     },
     deck_settings: {
         cards_per_stack: {type: Number},
-        card_layout: {type: String},
-        card_layout_filling: {type: String},
+        card_question: {type: String},
+        card_answer: {type: Array},
         randomize: {type: Boolean}
     },
     cards: {type: Array},

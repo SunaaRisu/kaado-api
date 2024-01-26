@@ -10,4 +10,6 @@ router.get("/get_deck_list", authAndGetData, DeckController.getDeckList);
 
 router.post("/create", authAndGetData, DeckController.create);
 
+router.post("/update", authAndGetData, DeckController.update);
+
 module.exports = router;
