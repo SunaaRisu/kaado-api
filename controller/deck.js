@@ -56,63 +56,7 @@ exports.getDeckList = (req, res, next) => {
 }
 
 exports.create = (req, res, next) => {
-    if (req.body.cards_bulk) {
-        if(typeof(req.body.cards_bulk) !== 'string') {
-            return res.status(400).json({
-                error: 'wrong datatype'
-            });
-        };
-
-        var bulkData = req.body.cards_bulk;
-        var cards = [];
-
-        if (req.body.cards_bulk_settings.split_card_char) {
-            bulkData = bulkData.split(req.body.cards_bulk_settings.split_card_char);
-
-            bulkData.forEach(element => {
-
-                const newCard = {
-                    cardNumber: bulkData.indexOf(element) + 1,
-                    cardContent: element.split(req.body.cards_bulk_settings.split_cardFace_char),
-                };
-
-                cards.push(newCard);
-            });
-        }
-
-        const id = new mongoose.Types.ObjectId();
-
-        const deck = new Deck({
-            _id: id,
-            title: req.body.title, 
-            card_count: cards.length,
-            cards: cards,
-            chartDefinition: {
-                chart_columns: req.body.cards_bulk_settings.chart_columns,
-                chart_columns_name: req.body.cards_bulk_settings.chart_columns_names
-            }
-        });
-
-        deck.save()
-        .then(result => {
-            if (!result) {
-                res.status(500).json({
-                    error: 'Internal server error'
-                });
-            }
-
-            res.status(201).json({
-                message: 'Deck created',
-                _id: id
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            res.status(500).json({
-                error: 'Internal server error'
-            });
-        });
-    }    
+      
 }
 
 exports.update = (req, res, next) => {
