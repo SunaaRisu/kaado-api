@@ -4,9 +4,10 @@ const deck = mongoose.Schema({
     _id: mongoose.Schema.Types.ObjectId,
     deck_info: {
         title: {type: String},
+        discription: {type: String},
         author: {type: String},
         card_count: {type: Number},
-        chartDefinition: {
+        chart_definition: {
             chart_columns: {type: Number},
             chart_columns_name: {type: Array}
         }

@@ -56,7 +56,47 @@ exports.getDeckList = (req, res, next) => {
 }
 
 exports.create = (req, res, next) => {
-      
+    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_definition.chart_columns) !== 'number' || !Array.isArray(req.body.chart_definition.chart_columns_name) || typeof(req.body.cards_per_stack) !== 'number' || typeof(card_question) !== 'string' || !Array.isArray(req.body.card_answer) || typeof(req.body.randomize) !== 'boolean' || !Array.isArray(req.body.cards)) {
+        return res.status(400).json({
+            error: 'wrong datatype'
+        });
+    };
+
+    const deck = new Deck({
+        _id: new mongoose.Types.ObjectId(),
+        deck_info: {
+            title: req.body.title,
+            discrption: req.body.description,
+            author: req.userData._id,
+            card_count: req.body.card_count,
+            chart_definition: {
+                chart_columns: req.body.chart_definition.chart_columns,
+                chart_columns_name: req.body.chart_columns_name
+            }
+        },
+        deck_settings: {
+            cards_per_stack: req.body.cards_per_stack,
+            card_question: req.body.card_question,
+            card_answer: req.body.card_answer,
+            randomize: req.body.randomize
+        },
+        cards: req.body.cards
+    });
+
+    deck.save()
+        .then(result => {
+            if (result) {
+                return res.status(201).json({
+                    message: 'Deck created',
+                    _id: deck._id
+                });
+            };
+        })
+        .catch(err => {
+            res.status(500).json({
+                error: 'Inetrnal server error'
+            })
+        });
 }
 
 exports.update = (req, res, next) => {
