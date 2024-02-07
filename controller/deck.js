@@ -56,7 +56,7 @@ exports.getDeckList = (req, res, next) => {
 }
 
 exports.create = (req, res, next) => {
-    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_definition.chart_columns) !== 'number' || !Array.isArray(req.body.chart_definition.chart_columns_name) || typeof(req.body.cards_per_stack) !== 'number' || typeof(card_question) !== 'string' || !Array.isArray(req.body.card_answer) || typeof(req.body.randomize) !== 'boolean' || !Array.isArray(req.body.cards)) {
+    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_definition.chart_columns) !== 'number' || !Array.isArray(req.body.chart_definition.chart_columns_name)) {
         return res.status(400).json({
             error: 'wrong datatype'
         });
@@ -75,10 +75,10 @@ exports.create = (req, res, next) => {
             }
         },
         deck_settings: {
-            cards_per_stack: req.body.cards_per_stack,
-            card_question: req.body.card_question,
-            card_answer: req.body.card_answer,
-            randomize: req.body.randomize
+            cards_per_stack: req.body.card_count,
+            card_question: 'ALL',
+            card_answer: ['REMAINING'],
+            randomize: true
         },
         cards: req.body.cards
     });
