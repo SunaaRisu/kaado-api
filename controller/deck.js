@@ -69,7 +69,7 @@ exports.create = (req, res, next) => {
             discrption: req.body.description,
             author: req.userData._id,
             card_count: req.body.card_count,
-            chart_definition: {
+            chartDefinition: {
                 chart_columns: req.body.chart_definition.chart_columns,
                 chart_columns_name: req.body.chart_columns_name
             }
