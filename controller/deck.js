@@ -56,11 +56,14 @@ exports.getDeckList = (req, res, next) => {
 }
 
 exports.create = (req, res, next) => {
-    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_definition.chart_columns) !== 'number' || !Array.isArray(req.body.chart_definition.chart_columns_name)) {
+    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_columns) !== 'number' || !Array.isArray(req.body.chart_columns_name)) {
         return res.status(400).json({
             error: 'wrong datatype'
         });
     };
+
+    console.log(req.body.chart_columns);
+    console.log('test');
 
     const deck = new Deck({
         _id: new mongoose.Types.ObjectId(),
@@ -70,7 +73,7 @@ exports.create = (req, res, next) => {
             author: req.userData._id,
             card_count: req.body.card_count,
             chartDefinition: {
-                chart_columns: req.body.chart_definition.chart_columns,
+                chart_columns: req.body.chart_columns,
                 chart_columns_name: req.body.chart_columns_name
             }
         },
@@ -93,6 +96,7 @@ exports.create = (req, res, next) => {
             };
         })
         .catch(err => {
+            console.log(err);
             res.status(500).json({
                 error: 'Inetrnal server error'
             })

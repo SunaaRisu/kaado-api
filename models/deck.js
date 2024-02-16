@@ -7,7 +7,7 @@ const deck = mongoose.Schema({
         discription: {type: String},
         author: {type: String},
         card_count: {type: Number},
-        chart_definition: {
+        chartDefinition: {
             chart_columns: {type: Number},
             chart_columns_name: {type: Array}
         }
