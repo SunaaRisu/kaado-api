@@ -8,13 +8,11 @@ const cors = require('cors');
 // Routes
 
 const deckRoutes = require('./routes/deck');
-const cardRoutes = require('./routes/card');
+const userRoutes = require('./routes/user');
 
 // mongoose connect 
 
-mongoose.connect(    
-    process.env.DB_URL
-);
+mongoose.connect(process.env.DB_URI);
 mongoose.Promise = global.Promise;
 
 
@@ -31,7 +29,7 @@ app.use(cookieParser());
 app.use(
     cors({ 
         origin: ['http://localhost:5173', 'https://kaado.sunaarisu.de'], 
-        methods: ['GET', 'POST'], 
+        methods: ['GET', 'POST', 'PATCH'], 
         credentials: true
     })
 );
@@ -39,7 +37,7 @@ app.use(
 // Use Routes
 
 app.use('/deck', deckRoutes);
-app.use('/card', cardRoutes);
+app.use('/user', userRoutes);
 
 app.get('/', (req, res) => res.json('Kaado API is running!'));
 

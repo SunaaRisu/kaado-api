@@ -39,8 +39,8 @@ exports.getDeckList = (req, res, next) => {
             result.forEach(deck => {
                 response.push({
                     _id: deck._id,
-                    title: deck.title,
-                    card_count: deck.card_count
+                    deckInfo: deck.deck_info,
+                    deckSettings: deck.deck_settings
                 });
             });
 
@@ -52,61 +52,84 @@ exports.getDeckList = (req, res, next) => {
             return res.status(500).json({
                 error: 'Internal server error'
             });
-        });
-
-    
+        });    
 }
 
 exports.create = (req, res, next) => {
-    if (req.body.cards_bulk) {
-        if(typeof(req.body.cards_bulk) !== 'string') {
-            return res.status(400).json({
-                error: 'wrong datatype'
-            });
-        };
-
-        var bulkData = req.body.cards_bulk;
-        var cards = [];
-
-        if (req.body.cards_bulk_settings.split_card_char) {
-            bulkData = bulkData.split(req.body.cards_bulk_settings.split_card_char);
-
-            bulkData.forEach(element => {
-
-                const newCard = {
-                    cardNumber: bulkData.indexOf(element) + 1,
-                    cardContent: element.split(req.body.cards_bulk_settings.split_cardFace_char),
-                };
-
-                cards.push(newCard);
-            });
-        }
-
-        const id = new mongoose.Types.ObjectId();
-
-        const deck = new Deck({
-            _id: id,
-            title: req.body.title, 
-            card_count: cards.length,
-            cards: cards,
-            chartDefinition: {
-                chart_columns: req.body.cards_bulk_settings.chart_columns,
-                chart_columns_name: req.body.cards_bulk_settings.chart_columns_names
-            }
+    if(typeof(req.body.title) !== 'string' || typeof(req.body.description) !== 'string' || typeof(req.body.card_count) !== 'number' || typeof(req.body.chart_columns) !== 'number' || !Array.isArray(req.body.chart_columns_name)) {
+        return res.status(400).json({
+            error: 'wrong datatype'
         });
+    };
 
-        deck.save()
+    console.log(req.body.chart_columns);
+    console.log('test');
+
+    const deck = new Deck({
+        _id: new mongoose.Types.ObjectId(),
+        deck_info: {
+            title: req.body.title,
+            discrption: req.body.description,
+            author: req.userData._id,
+            card_count: req.body.card_count,
+            chartDefinition: {
+                chart_columns: req.body.chart_columns,
+                chart_columns_name: req.body.chart_columns_name
+            }
+        },
+        deck_settings: {
+            cards_per_stack: req.body.card_count,
+            card_question: 'ALL',
+            card_answer: ['REMAINING'],
+            randomize: true
+        },
+        cards: req.body.cards
+    });
+
+    deck.save()
+        .then(result => {
+            if (result) {
+                return res.status(201).json({
+                    message: 'Deck created',
+                    _id: deck._id
+                });
+            };
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Inetrnal server error'
+            })
+        });
+}
+
+exports.update = (req, res, next) => {
+    var updateQuery = {};
+    req.body.updates.forEach(update => {
+        if (typeof(update.field) !== 'string' || typeof(update.value) !== 'string' && typeof(update.value) !== 'boolean' && !Array.isArray(update.value) && typeof(update.value) !== 'number'){
+            return res.status(400).json({
+                error: 'wrong datatype',
+                reason: [update.field, update.value]
+            });
+        }else{
+            updateQuery[update.field] = update.value;
+        };
+    });
+
+    console.log(updateQuery);
+
+    Deck.findOneAndUpdate({ _id: req.body._id}, updateQuery)
+        .exec()
         .then(result => {
             if (!result) {
-                res.status(500).json({
-                    error: 'Internal server error'
+                return res.status(500).json({
+                    error: 'updating user failed'
                 });
-            }
-
-            res.status(201).json({
-                message: 'Deck created',
-                _id: id
-            });
+            }else{
+                return res.status(200).json({
+                    message: 'User updated'
+                });
+            };
         })
         .catch(err => {
             console.log(err);
@@ -114,5 +137,4 @@ exports.create = (req, res, next) => {
                 error: 'Internal server error'
             });
         });
-    }    
-}
+};
