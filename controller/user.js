@@ -3,6 +3,7 @@ const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const nodemailer = require('nodemailer');
 const User = require('../models/user');
+const Deck = require('../models/deck');
 
 
 exports.create = (req, res, next) => {
@@ -22,6 +23,7 @@ exports.create = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         username: req.body.username,
         email: req.body.email,
+        profile_picture: '',
         password: req.body.password,
         flags: {
             version: req.body.version,
@@ -44,7 +46,8 @@ exports.create = (req, res, next) => {
                         _id: user._id,
                         username: user.username,
                         email: user.email,
-                        version: user.flags.version
+                        version: user.flags.version,
+                        profilePicture: user.profile_picture
                     },
                     process.env.JWT_KEY,
                     {
@@ -124,7 +127,8 @@ exports.login = (req, res, next) => {
                         _id: user._id,
                         username: user.username,
                         email: user.email,
-                        version: user.flags.version
+                        version: user.flags.version,
+                        profilePicture: user.profile_picture
                     },
                     process.env.JWT_KEY,
                     {
@@ -189,7 +193,8 @@ exports.login = (req, res, next) => {
                         _id: user._id,
                         username: user.username,
                         email: user.email,
-                        version: user.flags.version
+                        version: user.flags.version,
+                        profilePicture: user.profile_picture
                     },
                     process.env.JWT_KEY,
                     {
@@ -280,7 +285,8 @@ exports.refresh_token = (req, res, next) => {
                 _id: user._id,
                 username: user.username,
                 email: user.email,
-                version: user.flags.version
+                version: user.flags.version,
+                profilePicture: user.profile_picture
             },
             process.env.JWT_KEY,
             {
@@ -452,3 +458,105 @@ exports.updateUser = (req, res, next) => {
             });
         });
 };
+
+exports.getDeckList = (req, res, next) => {
+    User.findOne({ _id: req.userData._id })
+        .exec()
+        .then(user => {
+            if (!user) {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            } else {
+                return res.status(200).json({
+                    deck_list: user.deck_list
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                errer: 'Internal server error'
+            });
+        })
+}
+
+exports.updateDeckList = (req, res, next) => {
+    // Payload
+    // uid
+    // deckid
+    // add
+
+
+    if (req.body.add) {
+        Deck.findOne({ _id: req.body.deckid })
+            .exec()
+            .then(deck => {
+                const newDeck = {
+                    id: deck._id,
+                    title: deck.deck_info.title,
+                    description: deck.deck_info.discription,
+                    card_count: deck.deck_info.card_count,
+                    deck_settings: {
+                        cards_per_stack: deck.deck_settings.cards_per_stack,
+                        card_question: deck.deck_settings.card_question,
+                        card_answer: deck.deck_settings.card_answer,
+                        randomize: deck.deck_settings.randomize,
+                        chart_definition: {
+                            chart_columns: deck.deck_info.chartDefinition.chart_columns,
+                            chart_columns_names: deck.deck_info.chartDefinition.chart_columns_names
+                        }
+                    }
+                };
+                User.findOneAndUpdate({ _id: req.userData._id }, { $push: { deck_list: newDeck}})
+                    .exec()
+                    .then(result => {                        
+                        if (!result) {
+                            return res.status(500).json({
+                                error: 'updating user failed'
+                            });
+                        }else{
+                            return res.status(200).json({
+                                message: 'User updated'
+                            });
+                        };                        
+                    })
+                    .catch(err => {
+                        console.log(err);
+                        res.status(500).json({
+                            errer: 'Internal server error'
+                        });
+                    });
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    errer: 'Internal server error'
+                });
+            });
+    } else if(!req.body.add) {
+        User.findOneAndUpdate({ _id: req.userData._id }, {
+            $pull: {
+                deck_list: {id: req.body.deckid},
+            }
+        })
+            .exec()
+            .then(result => {                    
+                if (!result) {
+                    return res.status(500).json({
+                        error: 'updating user failed'
+                    });
+                }else{
+                    return res.status(200).json({
+                        message: 'User updated'
+                    });
+                };                        
+            })
+            .catch(err => {
+                console.log(err);
+                res.status(500).json({
+                    errer: 'Internal server error'
+                });
+            });
+    }
+}
