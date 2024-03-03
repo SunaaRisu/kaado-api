@@ -257,12 +257,12 @@ exports.refresh_token = (req, res, next) => {
 
     var jid_token = '';
 
-    if (req.cookies.jid === 'undefined'){
+    if (req.cookies.jid === undefined){
         return res.status(401).json({
             error: 'no refresh token'
         });
     }
-
+    
     try {
         jid_token = jwt.verify(req.cookies.jid, process.env.JID_KEY);
     } catch (error) {
