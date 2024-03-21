@@ -20,7 +20,7 @@ router.patch("/update_user", authAndGetData, UserController.updateUser);
 
 // router.delete("/delete", UserController.delete);
 
-// router.post("/get_user", UserController.getUser);
+router.post("/get_user", UserController.getUser);
 
 // router.post("/request_data", authAndGetData, UserController.requestData);
 

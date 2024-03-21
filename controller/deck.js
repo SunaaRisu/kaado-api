@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Deck = require('../models/deck');
+const deck = require('../models/deck');
 
 exports.getOne = (req, res, next) => {
     if(typeof(req.body._id) !== 'string') {
@@ -69,7 +70,7 @@ exports.create = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         deck_info: {
             title: req.body.title,
-            discrption: req.body.description,
+            descrption: req.body.description,
             author: req.userData._id,
             card_count: req.body.card_count,
             chartDefinition: {

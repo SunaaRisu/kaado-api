@@ -459,6 +459,30 @@ exports.updateUser = (req, res, next) => {
         });
 };
 
+exports.getUser = (req, res, next) => {
+    User.findOne({ _id: req.body.userId})
+        .exec()
+        .then(user => {
+            if (!user) {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            } else {
+                return res.status(200).json({
+                    username: user.username,
+                    profilePicture: user.profile_picture,
+                    email: user.email,
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                errer: 'Internal server error'
+            });
+        });
+}
+
 exports.getDeckList = (req, res, next) => {
     User.findOne({ _id: req.userData._id })
         .exec()
