@@ -97,7 +97,10 @@ exports.create = (req, res, next) => {
         deck_info: {
             title: req.body.title,
             descrption: req.body.description,
-            author: req.userData._id,
+            author: {
+                id: req.userData._id,
+                username: req.userData.username
+            },
             card_count: req.body.card_count,
             chartDefinition: {
                 chart_columns: req.body.chart_columns,
