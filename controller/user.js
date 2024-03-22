@@ -27,7 +27,7 @@ exports.create = (req, res, next) => {
         password: req.body.password,
         flags: {
             version: req.body.version,
-            emailConfirmed: false,
+            email_confirmed: false,
         }
     });
 

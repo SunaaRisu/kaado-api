@@ -32,28 +32,54 @@ exports.getOne = (req, res, next) => {
 }
 
 exports.getDeckList = (req, res, next) => {
-    Deck.find()
-        .then(result => {
 
-            var response = [];
-
-            result.forEach(deck => {
-                response.push({
-                    _id: deck._id,
-                    deckInfo: deck.deck_info,
-                    deckSettings: deck.deck_settings
+    if (req.body.searchQuery) {
+        Deck.find({$text: {$search: req.body.searchQuery}})
+            .then(result => {
+    
+                var response = [];
+    
+                result.forEach(deck => {
+                    response.push({
+                        _id: deck._id,
+                        deckInfo: deck.deck_info,
+                        deckSettings: deck.deck_settings
+                    });
                 });
-            });
-
-            return res.status(200).json({
-                decks: response
-            });
-        })
-        .catch(err => {
-            return res.status(500).json({
-                error: 'Internal server error'
-            });
-        });    
+    
+                return res.status(200).json({
+                    decks: response
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            });  
+    } else {
+        Deck.find()
+            .then(result => {
+    
+                var response = [];
+    
+                result.forEach(deck => {
+                    response.push({
+                        _id: deck._id,
+                        deckInfo: deck.deck_info,
+                        deckSettings: deck.deck_settings
+                    });
+                });
+    
+                return res.status(200).json({
+                    decks: response
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            }); 
+    }
 }
 
 exports.create = (req, res, next) => {

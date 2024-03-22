@@ -5,7 +5,10 @@ const deck = mongoose.Schema({
     deck_info: {
         title: {type: String},
         description: {type: String},
-        author: {type: String},
+        author: {
+            id: {type: String},
+            username: {type: String}
+        },
         card_count: {type: Number},
         chartDefinition: {
             chart_columns: {type: Number},
@@ -19,6 +22,8 @@ const deck = mongoose.Schema({
         randomize: {type: Boolean}
     },
     cards: {type: Array},
-})
+});
+
+deck.index({'deck_info.title': 'text', 'deck_info.description': 'text', 'deck_info.author.username': 'text'});
 
 module.exports = mongoose.model('Deck', deck);
