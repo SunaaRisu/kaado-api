@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Deck = require('../models/deck');
+const deck = require('../models/deck');
 
 exports.getOne = (req, res, next) => {
     if(typeof(req.body._id) !== 'string') {
@@ -31,28 +32,54 @@ exports.getOne = (req, res, next) => {
 }
 
 exports.getDeckList = (req, res, next) => {
-    Deck.find()
-        .then(result => {
 
-            var response = [];
-
-            result.forEach(deck => {
-                response.push({
-                    _id: deck._id,
-                    deckInfo: deck.deck_info,
-                    deckSettings: deck.deck_settings
+    if (req.body.searchQuery) {
+        Deck.find({$text: {$search: req.body.searchQuery}})
+            .then(result => {
+    
+                var response = [];
+    
+                result.forEach(deck => {
+                    response.push({
+                        _id: deck._id,
+                        deckInfo: deck.deck_info,
+                        deckSettings: deck.deck_settings
+                    });
                 });
-            });
-
-            return res.status(200).json({
-                decks: response
-            });
-        })
-        .catch(err => {
-            return res.status(500).json({
-                error: 'Internal server error'
-            });
-        });    
+    
+                return res.status(200).json({
+                    decks: response
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            });  
+    } else {
+        Deck.find()
+            .then(result => {
+    
+                var response = [];
+    
+                result.forEach(deck => {
+                    response.push({
+                        _id: deck._id,
+                        deckInfo: deck.deck_info,
+                        deckSettings: deck.deck_settings
+                    });
+                });
+    
+                return res.status(200).json({
+                    decks: response
+                });
+            })
+            .catch(err => {
+                return res.status(500).json({
+                    error: 'Internal server error'
+                });
+            }); 
+    }
 }
 
 exports.create = (req, res, next) => {
@@ -69,7 +96,7 @@ exports.create = (req, res, next) => {
         _id: new mongoose.Types.ObjectId(),
         deck_info: {
             title: req.body.title,
-            discrption: req.body.description,
+            descrption: req.body.description,
             author: req.userData._id,
             card_count: req.body.card_count,
             chartDefinition: {

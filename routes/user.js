@@ -20,8 +20,12 @@ router.patch("/update_user", authAndGetData, UserController.updateUser);
 
 // router.delete("/delete", UserController.delete);
 
-// router.post("/get_user", UserController.getUser);
+router.post("/get_user", UserController.getUser);
 
 // router.post("/request_data", authAndGetData, UserController.requestData);
+
+router.get("/get_deck_list", authAndGetData, UserController.getDeckList);
+
+router.patch("/update_deck_list", authAndGetData, UserController.updateDeckList);
 
 module.exports = router;
