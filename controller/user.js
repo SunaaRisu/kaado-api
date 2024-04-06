@@ -528,7 +528,7 @@ exports.updateDeckList = (req, res, next) => {
                         randomize: deck.deck_settings.randomize,
                         chart_definition: {
                             chart_columns: deck.deck_info.chartDefinition.chart_columns,
-                            chart_columns_names: deck.deck_info.chartDefinition.chart_columns_names
+                            chart_columns_names: deck.deck_info.chartDefinition.chart_columns_name
                         }
                     }
                 };
