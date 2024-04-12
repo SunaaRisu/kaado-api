@@ -151,6 +151,7 @@ exports.update = (req, res, next) => {
     Deck.findOneAndUpdate({ _id: req.body._id}, updateQuery)
         .exec()
         .then(result => {
+            console.log(result);
             if (!result) {
                 return res.status(500).json({
                     error: 'updating user failed'
